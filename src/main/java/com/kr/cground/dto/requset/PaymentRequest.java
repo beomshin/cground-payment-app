@@ -11,7 +11,7 @@ public class PaymentRequest {
 
     private String orderNumber;
 
-    private String amount;
+    private Integer amount;
 
     private String userId;
 

@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
 import java.util.Map;
 
 @Slf4j
@@ -29,8 +30,12 @@ public class PaymentController {
 
         PaymentsEntity paymentsEntity = paymentService.addPayment(paymentRequest);
 
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String paymentDate = sdf.format(paymentsEntity.getPaidAt());
+
         return ResponseEntity.ok(Map.of(
                 "transactionId", paymentsEntity.getTransactionId(),
+                "paymentDate", paymentDate,
                 "resultCode", result.getCode(),
                 "resultMsg", result.getMessage()
         ));
