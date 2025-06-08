@@ -5,6 +5,7 @@ import com.kr.cground.dto.requset.PaymentRequest;
 import com.kr.cground.dto.response.PaymentResponse;
 import com.kr.cground.exception.PaymentException;
 import com.kr.cground.persistence.entity.PaymentsEntity;
+import com.kr.cground.persistence.entity.enums.PaymentStatus;
 import com.kr.cground.service.PaymentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +29,14 @@ public class PaymentController {
     ) throws PaymentException {
         var result = ResponseResult.SUCESS;
 
-        PaymentsEntity paymentsEntity = paymentService.addPayment(paymentRequest);
+        var paymentsEntity = paymentService.addPayment(paymentRequest);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String paymentDate = sdf.format(paymentsEntity.getPaidAt());
+        var sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        var paymentDate = sdf.format(paymentsEntity.getPaidAt());
+
+        if (paymentsEntity.getPaymentStatus() == PaymentStatus.FAILED) {
+            result = ResponseResult.FAIL_PAYMENT;
+        }
 
         return ResponseEntity.ok(Map.of(
                 "transactionId", paymentsEntity.getTransactionId(),
@@ -45,7 +50,7 @@ public class PaymentController {
     public ResponseEntity<?> getPayment(@PathVariable String transactionId) throws PaymentException {
         var result = ResponseResult.SUCESS;
 
-        PaymentsEntity paymentsEntity = paymentService.getPayment(transactionId);
+        var paymentsEntity = paymentService.getPayment(transactionId);
 
         return ResponseEntity.ok(Map.of(
                 "resultCode", result.getCode(),

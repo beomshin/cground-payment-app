@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Random;
 import java.util.UUID;
 
 @Slf4j
@@ -23,16 +24,39 @@ public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
 
+    private static final Random random = new Random();
+
+
     @Override
     @Transactional
     public PaymentsEntity addPayment(PaymentRequest paymentRequest) throws PaymentException {
+
+        boolean isError = random.nextInt(100) == 0;
+        PaymentStatus status;
+
+        if (isError) {
+            // 5~10초 사이 랜덤 대기
+            int sleepTime = 5000 + random.nextInt(5001); // 5000~10000ms
+            try {
+                Thread.sleep(sleepTime);
+            } catch (InterruptedException e) {}
+            status = PaymentStatus.FAILED;
+        } else {
+            // 1~3초 사이 랜덤 대기
+            int sleepTime = 1000 + random.nextInt(2001); // 1000~3000ms
+            try {
+                Thread.sleep(sleepTime);
+            } catch (InterruptedException e) {}
+            status = PaymentStatus.SUCCESS;
+        }
 
         var transcationId = UUID.randomUUID().toString().replace("-", "").substring(0, 32);
 
         var payment = PaymentsEntity.builder()
                 .orderNumbr(paymentRequest.getOrderNumber())
-                .paymentStatus(PaymentStatus.SUCCESS)
-                .paymentMethod(PaymentMethod.CARD)
+                .paymentStatus(status)
+                .paymentMethod(PaymentMethod.random())
+                .paymentGateway("CGROUND")
                 .transactionId(transcationId)
                 .userId(paymentRequest.getUserId())
                 .amount(paymentRequest.getAmount())
