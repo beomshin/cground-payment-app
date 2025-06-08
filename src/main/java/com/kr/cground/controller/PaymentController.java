@@ -41,6 +41,7 @@ public class PaymentController {
         return ResponseEntity.ok(Map.of(
                 "transactionId", paymentsEntity.getTransactionId(),
                 "paymentDate", paymentDate,
+                "paymentMethod", paymentsEntity.getPaymentMethod(),
                 "resultCode", result.getCode(),
                 "resultMsg", result.getMessage()
         ));

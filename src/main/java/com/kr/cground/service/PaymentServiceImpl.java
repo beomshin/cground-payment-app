@@ -31,7 +31,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     public PaymentsEntity addPayment(PaymentRequest paymentRequest) throws PaymentException {
 
-        boolean isError = random.nextInt(100) == 0;
+        boolean isError = random.nextInt(10) == 0;
         PaymentStatus status;
 
         if (isError) {
