@@ -6,7 +6,7 @@ spring:
     name: cground-payment-app
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://125.180.87.49:2206/cground_payment
+    url: jdbc:mysql://192.168.123.111:3306/cground_payment
     username: cground_payment
     password: cground_payment12!@
   profiles:
