@@ -29,3 +29,6 @@ spring:
       ddl-auto: none
     open-in-view: false
     show-sql: false
+
+  jackson:
+    time-zone: Asia/Seoul
