@@ -17,8 +17,8 @@ import java.util.Map;
 public class PaymentController {
 
 
-    @PostMapping("/cground/order")
-    public ResponseEntity<?> addOrder(
+    @PostMapping("/cground/payment")
+    public ResponseEntity<?> addPayment(
             @Valid @RequestBody PaymentRequest paymentRequest
     ) throws PaymentException {
         var result = ResponseResult.SUCESS;
@@ -29,8 +29,8 @@ public class PaymentController {
         ));
     }
 
-    @GetMapping("/cground/order/{paymentNumber}")
-    public ResponseEntity<?> getOrder(@PathVariable String paymentNumber) throws PaymentException {
+    @GetMapping("/cground/payment/{paymentNumber}")
+    public ResponseEntity<?> getPayment(@PathVariable String paymentNumber) throws PaymentException {
         var result = ResponseResult.SUCESS;
 
         return ResponseEntity.ok(Map.of(

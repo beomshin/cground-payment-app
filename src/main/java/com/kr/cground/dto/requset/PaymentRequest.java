@@ -8,4 +8,11 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PaymentRequest {
+
+    private String orderNumber;
+
+    private String amount;
+
+    private String userId;
+
 }
