@@ -31,39 +31,44 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     public PaymentsEntity addPayment(PaymentRequest paymentRequest) throws PaymentException {
 
-        boolean isError = random.nextInt(100) == 0;
-        PaymentStatus status;
+        try {
+            boolean isError = random.nextInt(100) == 0;
+            PaymentStatus status;
 
-        if (isError) {
-            // 5~10초 사이 랜덤 대기
-            int sleepTime = 5000 + random.nextInt(5001); // 5000~10000ms
-            try {
-                Thread.sleep(sleepTime);
-            } catch (InterruptedException e) {}
-            status = PaymentStatus.FAILED;
-        } else {
-            // 1~3초 사이 랜덤 대기
-            int sleepTime = 1000 + random.nextInt(2001); // 1000~3000ms
-            try {
-                Thread.sleep(sleepTime);
-            } catch (InterruptedException e) {}
-            status = PaymentStatus.SUCCESS;
+            if (isError) {
+                // 5~10초 사이 랜덤 대기
+                int sleepTime = 5000 + random.nextInt(5001); // 5000~10000ms
+                try {
+                    Thread.sleep(sleepTime);
+                } catch (InterruptedException ignored) {}
+                status = PaymentStatus.FAILED;
+            } else {
+                // 1~3초 사이 랜덤 대기
+                int sleepTime = 500 + random.nextInt(2001); // 500~3000ms
+                try {
+                    Thread.sleep(sleepTime);
+                } catch (InterruptedException ignored) {}
+                status = PaymentStatus.SUCCESS;
+            }
+
+            var transactionId = UUID.randomUUID().toString().replace("-", "").substring(0, 32);
+
+            var payment = PaymentsEntity.builder()
+                    .orderNumbr(paymentRequest.getOrderNumber())
+                    .paymentStatus(status)
+                    .paymentMethod(PaymentMethod.random())
+                    .paymentGateway("CGROUND")
+                    .transactionId(transactionId)
+                    .userId(paymentRequest.getUserId())
+                    .amount(paymentRequest.getAmount())
+                    .paidAt(new Timestamp(new Date().getTime()))
+                    .build();
+
+            return paymentRepository.save(payment);
+
+        } catch (Exception e) {
+            throw new PaymentException(ResponseResult.FAIL_PAYMENT);
         }
-
-        var transcationId = UUID.randomUUID().toString().replace("-", "").substring(0, 32);
-
-        var payment = PaymentsEntity.builder()
-                .orderNumbr(paymentRequest.getOrderNumber())
-                .paymentStatus(status)
-                .paymentMethod(PaymentMethod.random())
-                .paymentGateway("CGROUND")
-                .transactionId(transcationId)
-                .userId(paymentRequest.getUserId())
-                .amount(paymentRequest.getAmount())
-                .paidAt(new Timestamp(new Date().getTime()))
-                .build();
-
-        return paymentRepository.save(payment);
     }
 
     @Override
